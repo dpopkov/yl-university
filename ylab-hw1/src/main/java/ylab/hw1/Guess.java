@@ -15,20 +15,20 @@ public class Guess {
                 MIN_NUMBER, MAX_NUMBER, MAX_ATTEMPTS);
         try (Scanner scanner = new Scanner(System.in)) {
             int count = 0;
-            boolean didntGuess = true;
-            while (didntGuess && count < MAX_ATTEMPTS) {
+            boolean isNotGuessed = true;
+            while (isNotGuessed && count < MAX_ATTEMPTS) {
                 final int guess = scanner.nextInt();
                 count++;
                 if (guess == number) {
                     System.out.println("Ты угадал с " + count + " попытки");
-                    didntGuess = false;
+                    isNotGuessed = false;
                 } else if (number < guess) {
                     System.out.println("Мое число меньше! Осталось " + (MAX_ATTEMPTS - count) + " попыток");
                 } else {
                     System.out.println("Мое число больше! Осталось " + (MAX_ATTEMPTS - count) + " попыток");
                 }
             }
-            if (didntGuess) {
+            if (isNotGuessed) {
                 System.out.println("Ты не угадал.");
             }
         }

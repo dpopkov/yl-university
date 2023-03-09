@@ -8,14 +8,15 @@ public class Stars {
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Ввод:");
             int n = scanner.nextInt();
-            validateInput(n);
             int m = scanner.nextInt();
-            validateInput(m);
             String template = scanner.next();
-            validateInput(template);
-            String output = buildOutput(n, m, template.charAt(0));
-            System.out.println("Вывод:");
-            System.out.println(output);
+            if (inputIsValid(n) && inputIsValid(m) && inputIsValid(template)) {
+                String output = buildOutput(n, m, template.charAt(0));
+                System.out.println("Вывод:");
+                System.out.println(output);
+            } else {
+                System.out.println("Программа завершена. Повторите попытку с другими данными.");
+            }
         }
     }
 
@@ -33,17 +34,19 @@ public class Stars {
         return builder.toString();
     }
 
-    private static void validateInput(int value) {
+    private static boolean inputIsValid(int value) {
         if (value <= 0) {
             System.err.printf("Ввод должен быть натуральным числом. Введено некорректное число: %d.%n", value);
-            System.exit(0);
+            return false;
         }
+        return true;
     }
 
-    private static void validateInput(String symbol) {
+    private static boolean inputIsValid(String symbol) {
         if (symbol.length() != 1) {
-            System.err.printf("Ввод должен содержать 1 символ. Введена некорректная строка: %s%n", symbol);
-            System.exit(0);
+            System.err.printf("Ввод символа должен содержать 1 букву. Введена слишком длинная строка: %s%n", symbol);
+            return false;
         }
+        return true;
     }
 }
