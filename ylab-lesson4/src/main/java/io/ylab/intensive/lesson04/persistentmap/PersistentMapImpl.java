@@ -9,7 +9,10 @@ import java.util.List;
 import javax.sql.DataSource;
 
 /**
- * Класс, методы которого надо реализовать
+ * Реализация PersistentMap, которая позволяет помещать null значения,
+ * но не допускает null ключи.
+ * Можно было бы реализовать и null ключи, как в нормальной HashMap,
+ * но это бы немного усложнило запросы к БД и я посчитал это излишним.
  */
 public class PersistentMapImpl implements PersistentMap {
 
@@ -32,7 +35,7 @@ public class PersistentMapImpl implements PersistentMap {
     @Override
     public void init(String name) {
         if (name == null) {
-            throw new NullPointerException("Параметра name не должен быть null.");
+            throw new NullPointerException("Параметр name не должен быть null.");
         }
         this.currentMapName = name;
     }

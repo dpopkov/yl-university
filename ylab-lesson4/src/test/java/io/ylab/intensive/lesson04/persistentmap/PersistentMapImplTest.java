@@ -16,6 +16,7 @@ class PersistentMapImplTest {
     private static final String K_2 = "key2";
     private static final String V_1 = "value1";
     private static final String V_2 = "value2";
+    private static final String MAP_0 = "map0";
     private static final String MAP_1 = "map1";
     private static final String MAP_2 = "map2";
 
@@ -49,6 +50,16 @@ class PersistentMapImplTest {
     @Test
     void testPut_whenKeyIsNull_thenNullPointerException()  {
         Assertions.assertThrows(NullPointerException.class, () -> map.put(null, "not-null"));
+    }
+
+    @Test
+    void testPut_whenPutNullValue_thenSavesNullValue() throws SQLException {
+        map.init(MAP_0);
+        assertThat(map.containsKey(K_1)).isFalse();
+        map.put(K_1, null);
+        assertThat(map.containsKey(K_1)).isTrue();
+        String value = map.get(K_1);
+        assertThat(value).isNull();
     }
 
     @Test
