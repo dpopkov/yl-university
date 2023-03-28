@@ -2,6 +2,7 @@ package io.ylab.intensive.lesson04.persistentmap;
 
 import io.ylab.intensive.lesson04.DbUtil;
 import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,16 @@ class PersistentMapImplTest {
                 + ");";
         DbUtil.applyDdl(createMapTable, dataSource);
         return dataSource;
+    }
+
+    @Test
+    void testInit_whenInitWithNull_thenNullPointerException() {
+        Assertions.assertThrows(NullPointerException.class, () -> map.init(null));
+    }
+
+    @Test
+    void testPut_whenKeyIsNull_thenNullPointerException()  {
+        Assertions.assertThrows(NullPointerException.class, () -> map.put(null, "not-null"));
     }
 
     @Test

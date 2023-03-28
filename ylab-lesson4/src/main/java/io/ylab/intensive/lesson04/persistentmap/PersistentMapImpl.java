@@ -31,11 +31,15 @@ public class PersistentMapImpl implements PersistentMap {
 
     @Override
     public void init(String name) {
+        if (name == null) {
+            throw new NullPointerException("Параметра name не должен быть null.");
+        }
         this.currentMapName = name;
     }
 
     @Override
     public boolean containsKey(String key) throws SQLException {
+        checkKeyIsNotNull(key);
         checkMapIsInitialized();
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement selectStatement = withMapNameKey(connection, SELECT_VALUE_SQL, key);
@@ -64,6 +68,7 @@ public class PersistentMapImpl implements PersistentMap {
 
     @Override
     public String get(String key) throws SQLException {
+        checkKeyIsNotNull(key);
         checkMapIsInitialized();
         String value = null;
         try (Connection connection = this.dataSource.getConnection();
@@ -79,6 +84,7 @@ public class PersistentMapImpl implements PersistentMap {
 
     @Override
     public void remove(String key) throws SQLException {
+        checkKeyIsNotNull(key);
         checkMapIsInitialized();
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement deleteStatement = withMapNameKey(connection, DELETE_SQL, key)) {
@@ -93,6 +99,7 @@ public class PersistentMapImpl implements PersistentMap {
 
     @Override
     public void put(String key, String value) throws SQLException {
+        checkKeyIsNotNull(key);
         checkMapIsInitialized();
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement selectStatement = withMapNameKey(connection, SELECT_VALUE_SQL, key);
@@ -125,6 +132,12 @@ public class PersistentMapImpl implements PersistentMap {
         }
     }
 
+    private void checkKeyIsNotNull(String key) {
+        if (key == null) {
+            throw new NullPointerException("Ключ не может быть null");
+        }
+    }
+
     private PreparedStatement withMapName(Connection connection, String sql) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, this.currentMapName);
@@ -143,7 +156,11 @@ public class PersistentMapImpl implements PersistentMap {
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, this.currentMapName);
         statement.setString(2, key);
-        statement.setString(3, value);
+        if (value != null) {
+            statement.setString(3, value);
+        } else {
+            statement.setNull(3, Types.VARCHAR);
+        }
         return statement;
     }
 
