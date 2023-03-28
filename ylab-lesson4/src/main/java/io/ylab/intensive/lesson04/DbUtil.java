@@ -25,7 +25,7 @@ public class DbUtil {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setServerName("localhost");
         dataSource.setUser("postgres");
-        dataSource.setPassword("postgres");
+        dataSource.setPassword("password");
         dataSource.setDatabaseName("postgres");
         dataSource.setPortNumber(5432);
         dataSource.getConnection().close();

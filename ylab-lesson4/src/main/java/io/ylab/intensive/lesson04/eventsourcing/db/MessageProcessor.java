@@ -3,6 +3,8 @@ package io.ylab.intensive.lesson04.eventsourcing.db;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.*;
+import io.ylab.intensive.lesson04.eventsourcing.ModifyingPersonDao;
+import io.ylab.intensive.lesson04.eventsourcing.commands.ModifyingCommand;
 import io.ylab.intensive.lesson04.eventsourcing.commands.PersonDelete;
 import io.ylab.intensive.lesson04.eventsourcing.commands.PersonSave;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import static io.ylab.intensive.lesson04.eventsourcing.Constants.PERSON_EXCHANGE_NAME;
@@ -17,6 +20,11 @@ import static io.ylab.intensive.lesson04.eventsourcing.Constants.PERSON_QUEUE_NA
 
 public class MessageProcessor {
     private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
+
+    private static final Map<String, Class<? extends ModifyingCommand>> ROUTING_KEY_TO_COMMAND = Map.of(
+            "person.delete", PersonDelete.class,
+            "person.save", PersonSave.class
+    );
 
     private final ConnectionFactory connectionFactory;
     private final ModifyingPersonDao personDao;
@@ -49,18 +57,16 @@ public class MessageProcessor {
 
     private void process(String message, String routingKey) {
         try {
-            if (routingKey.endsWith(".delete")) {
-                PersonDelete personDelete = objectMapper.readValue(message, PersonDelete.class);
-                if (personDelete.isValid()) {
-                    personDao.deletePerson(personDelete.getPersonId());
-                }
-            } else if (routingKey.endsWith(".save")) {
-                PersonSave personSave = objectMapper.readValue(message, PersonSave.class);
-                if (personSave.isValid()) {
-                    personDao.savePerson(personSave.getPerson());
-                }
-            } else {
+            Class<? extends ModifyingCommand> commandClass = ROUTING_KEY_TO_COMMAND.get(routingKey);
+            if (commandClass == null) {
                 log.error("Некорректное значение routingKey {} ", routingKey);
+                return;
+            }
+            ModifyingCommand command = objectMapper.readValue(message, commandClass);
+            if (command.isValid()) {
+                command.execute(this.personDao);
+            } else {
+                log.error("Некорректная команда: {}", message);
             }
         } catch (JsonProcessingException | SQLException ex) {
             log.error("Ошибка при обработке сообщения " + message, ex);

@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ReadingPersonDao {
-    private static final Logger log = LoggerFactory.getLogger(ReadingPersonDao.class);
+public class DbReadingPersonDao {
+    private static final Logger log = LoggerFactory.getLogger(DbReadingPersonDao.class);
 
     private static final String SELECT_BY_ID_SQL = "SELECT first_name, last_name, middle_name FROM person WHERE person_id = ?";
     private static final String SELECT_ALL_SQL = "SELECT person_id, first_name, last_name, middle_name FROM person";
 
     private final DataSource dataSource;
 
-    public ReadingPersonDao(DataSource dataSource) {
+    public DbReadingPersonDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

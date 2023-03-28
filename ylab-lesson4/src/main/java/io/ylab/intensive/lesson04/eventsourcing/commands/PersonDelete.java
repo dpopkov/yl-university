@@ -1,9 +1,12 @@
 package io.ylab.intensive.lesson04.eventsourcing.commands;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ylab.intensive.lesson04.eventsourcing.ModifyingPersonDao;
 
-public class PersonDelete {
-    private final Command command = Command.DELETE;
+import java.sql.SQLException;
+
+public class PersonDelete implements ModifyingCommand {
+    private final CommandType commandType = CommandType.DELETE;
     private Long personId;
 
     public PersonDelete() {
@@ -21,12 +24,18 @@ public class PersonDelete {
         this.personId = personId;
     }
 
-    public Command getCommand() {
-        return command;
+    public CommandType getCommandType() {
+        return commandType;
     }
 
     @JsonIgnore
+    @Override
     public boolean isValid() {
-        return this.command == Command.DELETE && personId != null;
+        return this.commandType == CommandType.DELETE && personId != null;
+    }
+
+    @Override
+    public void execute(ModifyingPersonDao personDao) throws SQLException {
+        personDao.deletePerson(this.personId);
     }
 }

@@ -3,6 +3,7 @@ package io.ylab.intensive.lesson04.eventsourcing.db;
 import com.rabbitmq.client.ConnectionFactory;
 import io.ylab.intensive.lesson04.DbUtil;
 import io.ylab.intensive.lesson04.RabbitMQUtil;
+import io.ylab.intensive.lesson04.eventsourcing.ModifyingPersonDao;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ public class DbApp {
         DataSource dataSource = initDb();
         ConnectionFactory connectionFactory = initMQ();
 
-        ModifyingPersonDao personDao = new ModifyingPersonDao(dataSource);
+        ModifyingPersonDao personDao = new DbModifyingPersonDao(dataSource);
         MessageProcessor processor = new MessageProcessor(connectionFactory, personDao);
         System.out.println("Waiting for messages. To exit press Ctrl+C");
         processor.start();

@@ -13,9 +13,9 @@ import java.util.List;
 public class PersonApiImpl implements PersonApi {
 
     private final MessageSender messageSender;
-    private final ReadingPersonDao personDao;
+    private final DbReadingPersonDao personDao;
 
-    public PersonApiImpl(MessageSender messageSender, ReadingPersonDao personDao) {
+    public PersonApiImpl(MessageSender messageSender, DbReadingPersonDao personDao) {
         this.messageSender = messageSender;
         this.personDao = personDao;
     }

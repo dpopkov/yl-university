@@ -1,5 +1,6 @@
 package io.ylab.intensive.lesson04.eventsourcing.db;
 
+import io.ylab.intensive.lesson04.eventsourcing.ModifyingPersonDao;
 import io.ylab.intensive.lesson04.eventsourcing.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ModifyingPersonDao {
-    private static final Logger log = LoggerFactory.getLogger(ModifyingPersonDao.class);
+public class DbModifyingPersonDao implements ModifyingPersonDao {
+    private static final Logger log = LoggerFactory.getLogger(DbModifyingPersonDao.class);
 
     private static final String DELETE_SQL = "DELETE FROM person WHERE person_id = ?";
     private static final String SELECT_SQL = "SELECT person_id FROM person WHERE person_id = ?";
@@ -20,10 +21,11 @@ public class ModifyingPersonDao {
 
     private final DataSource dataSource;
 
-    public ModifyingPersonDao(DataSource dataSource) {
+    public DbModifyingPersonDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    @Override
     public void deletePerson(Long personId) throws SQLException {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement deleteStatement = connection.prepareStatement(DELETE_SQL)) {
@@ -37,6 +39,7 @@ public class ModifyingPersonDao {
         }
     }
 
+    @Override
     public void savePerson(Person person) throws SQLException {
         try (Connection connection = this.dataSource.getConnection()) {
             boolean personExists = false;

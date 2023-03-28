@@ -22,7 +22,7 @@ public class ApiApp {
         DataSource dataSource = optional.get();
         ConnectionFactory connectionFactory = initMQ();
 
-        ReadingPersonDao personDao = new ReadingPersonDao(dataSource);
+        DbReadingPersonDao personDao = new DbReadingPersonDao(dataSource);
         MessageSender messageSender = new MessageSender(connectionFactory);
         PersonApi personApi = new PersonApiImpl(messageSender, personDao);
 
@@ -33,16 +33,27 @@ public class ApiApp {
         } else {
             personApi.savePerson(1L, "John", "Doe", "J");
             personApi.savePerson(2L, "Jane", "Doe", "");
+            giveTimeToExecute();
             printPersons(personApi.findAll());
 
             Person john = personApi.findPerson(1L);
             System.out.println("Found: " + john);
 
             personApi.deletePerson(2L);
+            giveTimeToExecute();
             printPersons(personApi.findAll());
 
             personApi.savePerson(1L, "John", "Modified", "");
+            giveTimeToExecute();
             printPersons(personApi.findAll());
+        }
+    }
+
+    private static void giveTimeToExecute() {
+        try {
+            Thread.sleep(10L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
