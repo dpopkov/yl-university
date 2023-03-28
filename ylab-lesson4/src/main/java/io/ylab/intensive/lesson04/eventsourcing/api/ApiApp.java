@@ -6,12 +6,21 @@ import io.ylab.intensive.lesson04.RabbitMQUtil;
 import io.ylab.intensive.lesson04.eventsourcing.Person;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 public class ApiApp {
     public static void main(String[] args) throws Exception {
+        Optional<DataSource> optional = getDataSourceWithExistingTable();
+        if (optional.isEmpty()) {
+            System.out.println("Запустите первым приложение DbApp и попробуйте еще раз.");
+            return;
+        }
+        DataSource dataSource = optional.get();
         ConnectionFactory connectionFactory = initMQ();
-        DataSource dataSource = DbUtil.buildDataSource();
 
         ReadingPersonDao personDao = new ReadingPersonDao(dataSource);
         MessageSender messageSender = new MessageSender(connectionFactory);
@@ -41,6 +50,25 @@ public class ApiApp {
         System.out.println("Found " + list.size() + " Persons");
         for (Person person : list) {
             System.out.println(person);
+        }
+    }
+
+    private static Optional<DataSource> getDataSourceWithExistingTable() {
+        try {
+            DataSource dataSource = DbUtil.buildDataSource();
+            try (Connection connection = dataSource.getConnection();
+                 Statement statement = connection.createStatement()) {
+                statement.executeQuery("SELECT EXISTS (SELECT first_name FROM person)");
+            }
+            return Optional.of(dataSource);
+        } catch (SQLException sqlException) {
+            String message = sqlException.getMessage();
+            if (message.contains("person") && message.contains("does not exist")) {
+                System.err.println("Таблица 'person' еще не создана.");
+            } else {
+                System.err.println(message);
+            }
+            return Optional.empty();
         }
     }
 

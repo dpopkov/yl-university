@@ -54,7 +54,7 @@ public class ConsoleCLI {
     }
 
     private void save(Scanner scanner) {
-        out.print("Введите id, firstName, lastName, middleName: ");
+        out.print("Введите (в одной строке разделяя пробелами) id, firstName, lastName, middleName: ");
         long saveId = scanner.nextLong();
         String firstName = scanner.next();
         String lastName = scanner.next();
