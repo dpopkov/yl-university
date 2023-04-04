@@ -27,8 +27,8 @@ class MessageFilterTest {
     @Test
     void testFilter_whenFindsWord_thenReplacesAllInstances() throws SQLException {
         when(dbClient.containsWord("one")).thenReturn(true);
-        String text = "one two ONE three.one,two,ONE;three?one!ONE";
-        String expected = "o*e two O*E three.o*e,two,O*E;three?o*e!O*E";
+        String text = "one two\nONE three.one,two,ONE;three?one!ONE\tOne";
+        String expected = "o*e two\nO*E three.o*e,two,O*E;three?o*e!O*E\tO*e";
         String actual = messageFilter.filter(text);
         assertEquals(expected, actual);
     }

@@ -22,3 +22,7 @@
     * [Persistent Map](ylab-lesson4/src/main/java/io/ylab/intensive/lesson04/persistentmap), [Persistent Map Test](ylab-lesson4/src/test/java/io/ylab/intensive/lesson04/persistentmap/PersistentMapImplTest.java)
     * [FileSort](ylab-lesson4/src/main/java/io/ylab/intensive/lesson04/filesort)
     * [Event Sourcing](ylab-lesson4/src/main/java/io/ylab/intensive/lesson04/eventsourcing)
+* [Homework 5](ylab-lesson5):
+    * [Event Sourcing](ylab-lesson5/src/main/java/io/ylab/intensive/lesson05/eventsourcing)
+    * [Query Extender](ylab-lesson5/src/main/java/io/ylab/intensive/lesson05/sqlquerybuilder), [Query Extender Test](ylab-lesson5/src/test/java/io/ylab/intensive/lesson05/sqlquerybuilder/SQLQueryBuilderImplTest.java)
+    * [Message Filter](ylab-lesson5/src/main/java/io/ylab/intensive/lesson05/messagefilter), [Message Filter Test](ylab-lesson5/src/test/java/io/ylab/intensive/lesson05/messagefilter/MessageFilterTest.java)
