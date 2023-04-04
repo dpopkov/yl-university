@@ -95,7 +95,7 @@ public class MessageFilter {
     }
 
     private boolean isDelimitingSymbol(char ch) {
-         if (Character.isWhitespace(ch)) {
+        if (Character.isWhitespace(ch)) {
             return true;
         }
         for (int i = 0; i < DELIMITING_SYMBOLS.length(); i++) {
